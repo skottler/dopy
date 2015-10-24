@@ -413,6 +413,32 @@ class DoManager(object):
         json = self.request('/events/%s' % event_id)
         return json['event']
 
+#floating_ips=====================================
+    def new_floating_ip(self, droplet_id):
+        """ Create a new floating IP assigned to a droplet. """
+        if self.api_version == 2:
+            return self.request('/floating_ips', {}, 'POST')
+
+    def move_floating_ip(self, ip_address, droplet_id):
+        """ Move an existing floating IP to a new droplet. """
+        if self.api_version == 2:
+            params = {}
+            params['droplet_id'] = droplet_id
+            params['type'] = 'assign'
+            return self.request('/floating_ips/%s/actions' % ip_address, params, 'POST')
+
+
+    def list_floating_ips(self):
+        """ Get a list of all floating IP's """
+        if self.api_version == 2:
+            return self.request('/floating_ips/')
+
+    def delete_floating_ip(self, ip_address):
+        """ Delete an existing floating IP. """
+        if self.api_version == 2:
+            return self.request('/floating_ips/%s' % ip_address, {}, 'DELETE')
+
+
 #low_level========================================
     def request(self, path, params={}, method='GET'):
         if not path.startswith('/'):
